@@ -61,8 +61,6 @@ namespace AssetStudio
         public int m_Width;
         public int m_Height;
         public TextureFormat m_TextureFormat;
-        public int unk1;
-        public int unk2;
         public bool m_MipMap;
         public int m_MipCount;
         public GLTextureSettings m_TextureSettings;
@@ -81,11 +79,6 @@ namespace AssetStudio
                 var m_MipsStripped = reader.ReadInt32();
             }
             m_TextureFormat = (TextureFormat)reader.ReadInt32();
-            if (reader.Game.Type.IsZZZ())
-            {
-                unk1 = reader.ReadInt32();
-                unk2 = reader.ReadInt32();
-            }
 
             if (version[0] < 5 || (version[0] == 5 && version[1] < 2)) //5.2 down
             {
@@ -103,7 +96,7 @@ namespace AssetStudio
                     var m_IsGNFTexture = reader.ReadBoolean();
                 }
             }
-            if (version[0] >= 2020) //2020.1 and up
+            if (version[0] >= 2020 || reader.Game.Type.IsZZZ()) //2020.1 and up
             {
                 var m_IsPreProcessed = reader.ReadBoolean();
             }
@@ -136,6 +129,12 @@ namespace AssetStudio
             {
                 var m_StreamingMipmapsPriority = reader.ReadInt32();
             }
+
+            if (reader.Game.Type.IsZZZ())
+            {
+                var m_IsCompressed = reader.ReadBoolean();
+                reader.AlignStream();
+            }
             var m_ImageCount = reader.ReadInt32();
             var m_TextureDimension = reader.ReadInt32();
             m_TextureSettings = new GLTextureSettings(reader);
@@ -158,6 +157,10 @@ namespace AssetStudio
                 if (reader.Game.Type.IsGI() && HasExternalMipRelativeOffset(reader.serializedType))
                 {
                     var m_externalMipRelativeOffset = reader.ReadUInt32();
+                }
+                if (reader.Game.Type.IsZZZ())
+                {
+                    var m_ExternalMipRelativeIndex = reader.ReadUInt32();
                 }
                 m_StreamData = new StreamingInfo(reader);
             }
