@@ -79,13 +79,13 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ContentWithTargetPath Include="Libraries\x86\acldb.dll">
+		<ContentWithTargetPath Include="Libraries\x86\acl_db.dll">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-			<TargetPath>x86\acldb.dll</TargetPath>
+			<TargetPath>x86\acl_db.dll</TargetPath>
 		</ContentWithTargetPath>
-		<ContentWithTargetPath Include="Libraries\x64\acldb.dll">
+		<ContentWithTargetPath Include="Libraries\x64\acl_db.dll">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-			<TargetPath>x64\acldb.dll</TargetPath>
+			<TargetPath>x64\acl_db.dll</TargetPath>
 		</ContentWithTargetPath>
 	</ItemGroup>
 

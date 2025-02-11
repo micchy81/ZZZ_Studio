@@ -77,7 +77,7 @@ namespace ACLLibs
 
     public static class DBACL
     {
-        private const string DLL_NAME = "acldb";
+        private const string DLL_NAME = "acl_db";
         static DBACL()
         {
             DllLoader.PreloadDll(DLL_NAME);
@@ -94,7 +94,10 @@ namespace ACLLibs
             var dbAligned = new IntPtr(16 * (((long)dbPtr + 15) / 16));
             Marshal.Copy(db, 0, dbAligned, db.Length);
 
-            DecompressTracks(dataAligned, dbAligned, ref decompressedClip);
+            // as long as m_ClipData is passed to acl_db.dll without the rest it should be fine
+            // m_databaseData doesn't seem to be used. For now
+            var streamer = new IntPtr(0);
+            DecompressTracks(dataAligned, dbAligned, streamer, ref decompressedClip);
 
             Marshal.FreeHGlobal(dataPtr);
             Marshal.FreeHGlobal(dbPtr);
@@ -111,7 +114,7 @@ namespace ACLLibs
         #region importfunctions
 
         [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
-        private static extern void DecompressTracks(nint data, nint db, ref DecompressedClip decompressedClip);
+        private static extern void DecompressTracks(nint data, nint db, nint streamer, ref DecompressedClip decompressedClip);
 
         [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
         private static extern void Dispose(ref DecompressedClip decompressedClip);
