@@ -763,6 +763,29 @@ namespace AssetStudio
                     reader.AlignStream();
                 }
             }
+            
+            if (reader.Game.Type.IsZZZ())
+            {
+                var m_MetricsDirty = reader.ReadBoolean();
+                reader.AlignStream();
+                var m_CloseMeshDynamicCompression = reader.ReadBoolean();
+                reader.AlignStream();
+
+                var m_CompressLevelVertexData = reader.ReadInt32();
+                var m_CompressLevelNormalAndTangent = reader.ReadInt32();
+                var m_CompressLevelTexCoordinates = reader.ReadInt32();
+                
+                var m_PackSkinDataToUV2UV3 = reader.ReadBoolean();
+                reader.AlignStream();
+                var m_BakeBVHData = reader.ReadBoolean();
+                var m_BakeRefittableBVH = reader.ReadBoolean();
+                reader.AlignStream();
+                var m_BVHBakeLevels = reader.ReadUInt8Array();
+                reader.AlignStream();
+                var m_BakedBVHSize = reader.ReadUInt64();
+                var m_BVHDataBuffer = reader.ReadUInt8Array();
+                reader.AlignStream();
+            }
 
             if (version[0] > 2018 || (version[0] == 2018 && version[1] >= 3)) //2018.3 and up
             {
