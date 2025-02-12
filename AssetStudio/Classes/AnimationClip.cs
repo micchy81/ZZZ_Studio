@@ -811,6 +811,7 @@ namespace AssetStudio
         public uint m_ConstCurveCount;
 
         public byte[] m_ClipData;
+        public byte[] m_databaseData;
 
         public override bool IsSet => !m_ClipData.IsNullOrEmpty();
         public override uint CurveCount => m_CurveCount;
@@ -820,6 +821,7 @@ namespace AssetStudio
             m_CurveCount = 0;
             m_ConstCurveCount = 0;
             m_ClipData = Array.Empty<byte>();
+            m_databaseData = Array.Empty<byte>();
         }
         public override void Read(ObjectReader reader)
         {
@@ -839,8 +841,15 @@ namespace AssetStudio
             {
                 m_ConstCurveCount = reader.ReadUInt32();
             }
+
+            if (reader.Game.Type.IsZZZ())
+            {
+                m_databaseData = reader.ReadUInt8Array();
+            }
         }
     }
+    
+    
 
     public class AclTransformTrackIDToBindingCurveID
     {
@@ -1333,7 +1342,7 @@ namespace AssetStudio
             {
                 m_ConstantClip = new ConstantClip(reader);
             }
-            if (reader.Game.Type.IsGIGroup() || reader.Game.Type.IsBH3Group() || reader.Game.Type.IsZZZCB1())
+            if (reader.Game.Type.IsGIGroup() || reader.Game.Type.IsBH3Group() || reader.Game.Type.IsZZZCB1() || reader.Game.Type.IsZZZ())
             {
                 m_ACLClip = new MHYACLClip();
                 m_ACLClip.Read(reader);
@@ -1459,6 +1468,7 @@ namespace AssetStudio
         public bool m_KeepOriginalPositionY;
         public bool m_KeepOriginalPositionXZ;
         public bool m_HeightFromFeet;
+        public bool m_ReducedDeltaValue;
         public static bool HasShortIndexArray(SerializedType type) => type.Match("E708B1872AE48FD688AC012DF4A7A178") || type.Match("055AA41C7639327940F8900103A10356");
         public ClipMuscleConstant() { }
 
@@ -1498,7 +1508,7 @@ namespace AssetStudio
             m_CycleOffset = reader.ReadSingle();
             m_AverageAngularSpeed = reader.ReadSingle();
 
-            if (reader.Game.Type.IsSR() && HasShortIndexArray(reader.serializedType))
+            if ((reader.Game.Type.IsSR() && HasShortIndexArray(reader.serializedType)) || reader.Game.Type.IsZZZ())
             {
                 m_IndexArray = reader.ReadInt16Array().Select(x => (int)x).ToArray();
             }
@@ -1538,6 +1548,10 @@ namespace AssetStudio
             m_KeepOriginalPositionY = reader.ReadBoolean();
             m_KeepOriginalPositionXZ = reader.ReadBoolean();
             m_HeightFromFeet = reader.ReadBoolean();
+            if (reader.Game.Type.IsZZZ())
+            {
+                m_ReducedDeltaValue = reader.ReadBoolean();
+            }
             reader.AlignStream();
         }
         public static ClipMuscleConstant ParseGI(ObjectReader reader)

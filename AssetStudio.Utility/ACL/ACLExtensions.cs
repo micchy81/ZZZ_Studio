@@ -20,7 +20,15 @@ namespace AssetStudio
                         DBACL.DecompressTracks(giaclClip.m_ClipData, giaclClip.m_DatabaseData, out values, out times);
                         break;
                     case MHYACLClip mhyaclClip:
-                        ACL.DecompressAll(mhyaclClip.m_ClipData, out values, out times);
+                        if (game.Type.IsZZZ())
+                        {
+                            DBACL.DecompressTracks(mhyaclClip.m_ClipData, mhyaclClip.m_databaseData, out values, out times);
+                        }
+                        else
+                        {
+                            ACL.DecompressAll(mhyaclClip.m_ClipData, out values, out times);
+                        }
+
                         break;
                     default:
                         values = Array.Empty<float>();
